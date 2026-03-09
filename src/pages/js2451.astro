@@ -1,0 +1,79 @@
+---
+// JS2451 班级预设页面
+import classData from '../data/classes/js2451.json';
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{classData.class_name} - 班级抽人工具</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/styles/main.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🎯 {classData.class_name} 班抽人工具</h1>
+      <p class="subtitle">已加载预设名单，共 {classData.students.length} 名同学</p>
+    </header>
+
+    <main class="main-content">
+      <section class="pick-section" id="pickSection" style="display: block;">
+        <div class="pick-card">
+          <div class="result-display">
+            <div class="result-container" id="resultContainer">
+              <p class="result-placeholder">准备好了吗？点击按钮开始抽人！</p>
+            </div>
+          </div>
+
+          <div class="animation-selector">
+            <label for="animationSelect">选择动画效果：</label>
+            <select id="animationSelect">
+              <option value="fadeIn">淡入淡出</option>
+              <option value="bounce">弹跳效果</option>
+              <option value="roll">滚动抽奖</option>
+              <option value="spin">大转盘</option>
+              <option value="flip">翻转卡片</option>
+            </select>
+          </div>
+
+          <div class="button-group">
+            <button id="pickBtn" class="btn btn-large btn-success">
+              <span class="icon">🎲</span>
+              <span class="text">点击抽人</span>
+            </button>
+            
+            <button id="resetBtn" class="btn btn-secondary">
+              <span class="icon">🔄</span>
+              <span class="text">重新抽取</span>
+            </button>
+            
+            <a href="/" class="btn btn-outline">
+              <span class="icon">⬅️</span>
+              <span class="text">返回首页</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2026 班级抽人工具 | {classData.class_name} 专用</p>
+    </footer>
+  </div>
+
+  <!-- 音效 -->
+  <audio id="clickSound" preload="auto">
+    <source src="/audio/click.mp3" type="audio/mpeg" />
+  </audio>
+  <audio id="successSound" preload="auto">
+    <source src="/audio/success.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script set:html={`
+   window.CLASS_DATA = ${JSON.stringify({ class_name: classData.class_name, students: classData.students })};
+  `}></script>
+  <script src="/scripts/class-page.js" type="module"></script>
+</body>
+</html>
