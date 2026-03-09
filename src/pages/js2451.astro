@@ -63,16 +63,10 @@ import classData from '../data/classes/js2451.json';
     </footer>
   </div>
 
-  <!-- 音效 -->
-  <audio id="clickSound" preload="auto">
-    <source src="/audio/click.mp3" type="audio/mpeg" />
-  </audio>
-  <audio id="successSound" preload="auto">
-    <source src="/audio/success.mp3" type="audio/mpeg" />
-  </audio>
-
+  <!-- 音效脚本 -->
+  <script is:inline src="/scripts/audio.js"></script>
   <script set:html={`
-   window.CLASS_DATA = ${JSON.stringify({ class_name: classData.class_name, students: classData.students })};
+  window.CLASS_DATA = ${JSON.stringify({ class_name: classData.class_name, students: classData.students })};
   `}></script>
   <script src="/scripts/class-page.js" type="module"></script>
 </body>

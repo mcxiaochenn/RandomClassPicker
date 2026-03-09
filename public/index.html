@@ -6,498 +6,144 @@
   <title>班级抽人工具</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <style>
-    * {
-     margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --primary-color: #4f46e5;
-      --primary-hover: #4338ca;
-      --success-color: #10b981;
-      --success-hover: #059669;
-      --secondary-color: #6b7280;
-      --secondary-hover: #4b5563;
-      --background-color: #f3f4f6;
-      --card-background: #ffffff;
-      --text-primary: #1f2937;
-      --text-secondary: #6b7280;
-      --border-color: #e5e7eb;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      --radius: 12px;
-      --radius-sm: 8px;
+      --primary-color: #4f46e5; --primary-hover: #4338ca;
+      --success-color: #10b981; --success-hover: #059669;
+      --secondary-color: #6b7280; --secondary-hover: #4b5563;
+      --text-primary: #1f2937; --text-secondary: #6b7280;
+      --border-color: #e5e7eb; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+      --radius: 12px; --radius-sm: 8px;
     }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-     color: var(--text-primary);
-      line-height: 1.6;
+      min-height: 100vh; color: var(--text-primary); line-height: 1.6;
     }
-
-    .container {
-     max-width: 900px;
-     margin: 0 auto;
-      padding: 2rem 1rem;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; min-height: 100vh; display: flex; flex-direction: column; }
+    .header { text-align: center; margin-bottom: 2rem; color: white; }
+    .header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+    .subtitle { font-size: 1.1rem; opacity: 0.95; }
+    .main-content { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
+    .upload-card, .pick-card {
+      background: var(--card-background, #ffffff); border-radius: var(--radius);
+      padding: 2rem; box-shadow: var(--shadow-lg); animation: slideIn 0.5s ease-out;
     }
-
-    .header {
-      text-align: center;
-     margin-bottom: 2rem;
-     color: white;
-    }
-
-    .header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-     margin-bottom: 0.5rem;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .subtitle {
-      font-size: 1.1rem;
-      opacity: 0.95;
-    }
-
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .upload-card,
-    .pick-card {
-      background: var(--card-background);
-      border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: var(--shadow-lg);
-      animation: slideIn 0.5s ease-out;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .upload-card h2,
-    .pick-card h2 {
-     color: var(--text-primary);
-      font-size: 1.5rem;
-     margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    .upload-hint {
-      text-align: center;
-     color: var(--text-secondary);
-     margin-bottom: 1.5rem;
-    }
-
-    .file-input-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-     margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .file-input {
-      position: absolute;
-     width: 1px;
-      height: 1px;
-      opacity: 0;
-      overflow: hidden;
-    }
-
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .upload-card h2, .pick-card h2 { color: var(--text-primary); font-size: 1.5rem; margin-bottom: 1rem; text-align: center; }
+    .upload-hint { text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem; }
+    .file-input-wrapper { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
     .file-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      background: var(--primary-color);
-     color: white;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem;
+      background: var(--primary-color); color: white; border-radius: var(--radius-sm);
+      cursor: pointer; transition: all 0.3s ease; font-weight: 500;
     }
-
-    .file-label:hover {
-      background: var(--primary-hover);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-
-    .file-name {
-     color: var(--text-secondary);
-      font-size: 0.9rem;
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .manual-input {
-     margin-bottom: 1.5rem;
-    }
-
-    .manual-input p {
-     color: var(--text-secondary);
-     margin-bottom: 0.5rem;
-    }
-
+    .file-label:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow); }
+    .file-name { color: var(--text-secondary); font-size: 0.9rem; flex: 1; min-width: 200px; }
+    .manual-input { margin-bottom: 1.5rem; }
+    .manual-input p { color: var(--text-secondary); margin-bottom: 0.5rem; }
     textarea {
-     width: 100%;
-      padding: 1rem;
-      border: 2px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      font-size: 1rem;
-      font-family: inherit;
-      resize: vertical;
-      transition: border-color 0.3s ease;
+     width: 100%; padding: 1rem; border: 2px solid var(--border-color); border-radius: var(--radius-sm);
+      font-size: 1rem; font-family: inherit; resize: vertical; transition: border-color 0.3s ease;
     }
-
-    textarea:focus {
-      outline: none;
-      border-color: var(--primary-color);
-    }
-
+    textarea:focus { outline: none; border-color: var(--primary-color); }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: inherit;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.75rem 1.5rem; border: none; border-radius: var(--radius-sm);
+      font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-family: inherit;
     }
-
-    .btn .icon {
-      font-size: 1.2rem;
-    }
-
-    .btn-primary {
-      background: var(--primary-color);
-     color: white;
-     width: 100%;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-hover);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-
-    .btn-large {
-      padding: 1rem 3rem;
-      font-size: 1.2rem;
-    }
-
-    .btn-success {
-      background: var(--success-color);
-     color: white;
-    }
-
-    .btn-success:hover {
-      background: var(--success-hover);
-      transform: scale(1.05);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn-secondary {
-      background: var(--secondary-color);
-     color: white;
-    }
-
-    .btn-secondary:hover {
-      background: var(--secondary-hover);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 2px solid var(--border-color);
-     color: var(--text-secondary);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--secondary-color);
-     color: var(--text-secondary);
-    }
-
-    .button-group {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-     margin-top: 2rem;
-    }
-
+    .btn .icon { font-size: 1.2rem; }
+    .btn-primary { background: var(--primary-color); color: white; width: 100%; }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow); }
+    .btn-large { padding: 1rem 3rem; font-size: 1.2rem; }
+    .btn-success { background: var(--success-color); color: white; }
+    .btn-success:hover { background: var(--success-hover); transform: scale(1.05); box-shadow: var(--shadow-lg); }
+    .btn-secondary { background: var(--secondary-color); color: white; }
+    .btn-secondary:hover { background: var(--secondary-hover); }
+    .btn-outline { background: transparent; border: 2px solid var(--border-color); color: var(--text-secondary); }
+    .btn-outline:hover { border-color: var(--secondary-color); color: var(--text-secondary); }
+    .button-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
     .student-count {
-      text-align: center;
-     margin-top: 1rem;
-      padding: 0.75rem;
-      background: #ecfdf5;
-      border-radius: var(--radius-sm);
-     color: #059669;
-      font-weight: 600;
-      display: none;
+      text-align: center; margin-top: 1rem; padding: 0.75rem;
+      background: #ecfdf5; border-radius: var(--radius-sm); color: #059669; font-weight: 600; display: none;
     }
-
     .result-display {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: var(--radius);
-      padding: 3rem 2rem;
-     margin-bottom: 2rem;
-      min-height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: var(--radius);
+      padding: 3rem 2rem; margin-bottom: 2rem; min-height: 200px;
+      display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
     }
-
-    .result-container {
-      text-align: center;
-     color: white;
-    }
-
-    .result-placeholder {
-      font-size: 1.2rem;
-      opacity: 0.9;
-    }
-
-    .result-name {
-      font-size:3rem;
-      font-weight: 700;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .animation-selector {
-      text-align: center;
-     margin-bottom: 1.5rem;
-    }
-
-    .animation-selector label {
-     color: var(--text-secondary);
-     margin-right: 0.5rem;
-    }
-
+    .result-container { text-align: center; color: white; }
+    .result-placeholder { font-size: 1.2rem; opacity: 0.9; }
+    .result-name { font-size: 3rem; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    .animation-selector { text-align: center; margin-bottom: 1.5rem; }
+    .animation-selector label { color: var(--text-secondary); margin-right: 0.5rem; }
     .animation-selector select {
-      padding: 0.5rem 1rem;
-      border: 2px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      font-size: 1rem;
-      cursor: pointer;
-      background: white;
-      transition: border-color 0.3s ease;
+      padding: 0.5rem 1rem; border: 2px solid var(--border-color); border-radius: var(--radius-sm);
+      font-size: 1rem; cursor: pointer; background: white; transition: border-color 0.3s ease;
     }
-
-    .animation-selector select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-    }
-
+    .animation-selector select:focus { outline: none; border-color: var(--primary-color); }
     .footer {
-      text-align: center;
-     margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-     color: rgba(255, 255, 255, 0.9);
-      font-size: 0.9rem;
+      text-align: center; margin-top: 2rem; padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.9); font-size: 0.9rem;
     }
-
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: scale(0.8);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
+    @keyframes fadeIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
     @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-      }
-      40% {
-        transform: translateY(-30px);
-      }
-      60% {
-        transform: translateY(-15px);
-      }
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-30px); } 60% { transform: translateY(-15px); }
     }
-
-    @keyframes roll {
-      0% {
-        transform: rotateX(360deg);
-      }
-      100% {
-        transform: rotateX(0deg);
-      }
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg) scale(0.5);
-        opacity: 0;
-      }
-      50% {
-        opacity: 0.5;
-      }
-      100% {
-        transform: rotate(360deg) scale(1);
-        opacity: 1;
-      }
-    }
-
-    @keyframes flip {
-      0% {
-        transform: perspective(400px) rotateY(90deg);
-        opacity: 0;
-      }
-      100% {
-        transform: perspective(400px) rotateY(0deg);
-        opacity: 1;
-      }
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.05);
-        opacity: 0.9;
-      }
-    }
-
-    .animate-fadeIn {
-      animation: fadeIn 0.6s ease-out;
-    }
-
-    .animate-bounce {
-      animation: bounce 1s ease-in-out;
-    }
-
-    .animate-roll {
-      animation: roll 0.8s ease-out;
-    }
-
-    .animate-spin {
-      animation: spin 0.8s ease-out;
-    }
-
-    .animate-flip {
-      animation: flip 0.6s ease-out;
-    }
-
+    @keyframes roll { 0% { transform: rotateX(360deg); } 100% { transform: rotateX(0deg); } }
+    @keyframes spin { 0% { transform: rotate(0deg) scale(0.5); opacity: 0; } 100% { transform: rotate(360deg) scale(1); opacity: 1; } }
+    @keyframes flip { 0% { transform: perspective(400px) rotateY(90deg); opacity: 0; } 100% { transform: perspective(400px) rotateY(0deg); opacity: 1; } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.9; } }
+    .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
+    .animate-bounce { animation: bounce 1s ease-in-out; }
+    .animate-roll { animation: roll 0.8s ease-out; }
+    .animate-spin { animation: spin 0.8s ease-out; }
+    .animate-flip { animation: flip 0.6s ease-out; }
     @media (max-width: 640px) {
-      .header h1 {
-        font-size: 1.8rem;
-      }
-
-      .upload-card,
-      .pick-card {
-        padding: 1.5rem 1rem;
-      }
-
-      .result-name {
-        font-size: 2rem;
-      }
-
-      .btn-large {
-        padding: 0.75rem 2rem;
-        font-size: 1rem;
-      }
-
-      .button-group {
-        flex-direction: column;
-      }
-
-      .button-group .btn {
-       width: 100%;
-      }
+      .header h1 { font-size: 1.8rem; }
+      .upload-card, .pick-card { padding: 1.5rem 1rem; }
+      .result-name { font-size: 2rem; }
+      .btn-large { padding: 0.75rem 2rem; font-size: 1rem; }
+      .button-group { flex-direction: column; }
+      .button-group .btn { width: 100%; }
     }
-
     .rolling-name {
-      font-size: 2.5rem;
-      font-weight: 700;
-     color: white;
-      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-      animation: pulse 0.3s ease-in-out infinite;
+      font-size: 2.5rem; font-weight: 700; color: white;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.3); animation: pulse 0.3s ease-in-out infinite;
     }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none !important;
-    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <h1>️ 班级抽人工具</h1>
+      <h1>🎯 班级抽人工具</h1>
       <p class="subtitle">公平随机抽取，让每个同学都有机会</p>
     </header>
-
     <main class="main-content">
       <section class="upload-section" id="uploadSection">
         <div class="upload-card">
           <h2>📁 上传学生名单</h2>
           <p class="upload-hint">请上传包含学生名字的文本文件（每行一个名字）</p>
-          
           <div class="file-input-wrapper">
-            <input 
-              type="file" 
-              id="fileInput" 
-              accept=".txt" 
-             class="file-input"
-            />
+            <input type="file" id="fileInput" accept=".txt" class="file-input" />
             <label for="fileInput" class="file-label">
-              <span class="icon">📄</span>
-              <span class="text">选择文件</span>
+              <span class="icon">📄</span><span class="text">选择文件</span>
             </label>
             <span id="fileName" class="file-name">未选择文件</span>
           </div>
-
           <div class="manual-input">
             <p>或者手动输入学生名字：</p>
-            <textarea 
-              id="manualInput" 
-              placeholder="请输入学生名字，每行一个&#10;例如：&#10;张三&#10;李四&#10;王五"
-             rows="5"
-            ></textarea>
+            <textarea id="manualInput" placeholder="请输入学生名字，每行一个&#10;例如：&#10;张三&#10;李四&#10;王五" rows="5"></textarea>
           </div>
-
           <button id="loadBtn" class="btn btn-primary">
-            <span class="icon">✅</span>
-            <span class="text">加载名单</span>
+            <span class="icon">✅</span><span class="text">加载名单</span>
           </button>
-
           <div id="studentCount" class="student-count"></div>
         </div>
       </section>
-
       <section class="pick-section" id="pickSection" style="display: none;">
         <div class="pick-card">
           <div class="result-display">
@@ -505,7 +151,6 @@
               <p class="result-placeholder">准备好了吗？点击按钮开始抽人！</p>
             </div>
           </div>
-
           <div class="animation-selector">
             <label for="animationSelect">选择动画效果：</label>
             <select id="animationSelect">
@@ -516,82 +161,61 @@
               <option value="flip">翻转卡片</option>
             </select>
           </div>
-
           <div class="button-group">
             <button id="pickBtn" class="btn btn-large btn-success">
-              <span class="icon">🎲</span>
-              <span class="text">点击抽人</span>
+              <span class="icon">🎲</span><span class="text">点击抽人</span>
             </button>
-            
             <button id="resetBtn" class="btn btn-secondary">
-              <span class="icon">🔄</span>
-              <span class="text">重新抽取</span>
+              <span class="icon">🔄</span><span class="text">重新抽取</span>
             </button>
-            
             <button id="backBtn" class="btn btn-outline">
-              <span class="icon">⬅️</span>
-              <span class="text">返回上传</span>
+              <span class="icon">⬅️</span><span class="text">返回上传</span>
             </button>
           </div>
         </div>
       </section>
     </main>
-
     <footer class="footer">
       <p>&copy; 2026 班级抽人工具 | 支持本地使用和静态部署</p>
     </footer>
   </div>
-
+  <script src="/scripts/audio.js"></script>
   <script>
    class RandomPicker {
      constructor() {
-        this.students = [];
-        this.isRolling = false;
-        this.lastWinnerIndex = -1;
-        
-        this.fileInput = document.getElementById('fileInput');
-        this.fileName = document.getElementById('fileName');
-        this.manualInput = document.getElementById('manualInput');
-        this.loadBtn = document.getElementById('loadBtn');
-        this.studentCount = document.getElementById('studentCount');
-        this.uploadSection = document.getElementById('uploadSection');
-        this.pickSection = document.getElementById('pickSection');
-        this.pickBtn = document.getElementById('pickBtn');
-        this.resetBtn = document.getElementById('resetBtn');
-        this.backBtn = document.getElementById('backBtn');
-        this.resultContainer = document.getElementById('resultContainer');
-        this.animationSelect = document.getElementById('animationSelect');
-        
-        this.init();
+       this.students = [];
+       this.isRolling = false;
+       this.lastWinnerIndex= -1;
+       this.fileInput = document.getElementById('fileInput');
+       this.fileName = document.getElementById('fileName');
+       this.manualInput = document.getElementById('manualInput');
+       this.loadBtn = document.getElementById('loadBtn');
+       this.studentCount = document.getElementById('studentCount');
+       this.uploadSection = document.getElementById('uploadSection');
+       this.pickSection = document.getElementById('pickSection');
+       this.pickBtn = document.getElementById('pickBtn');
+       this.resetBtn = document.getElementById('resetBtn');
+       this.backBtn = document.getElementById('backBtn');
+       this.resultContainer = document.getElementById('resultContainer');
+       this.animationSelect = document.getElementById('animationSelect');
+       this.init();
       }
-
-      init() {
-        this.bindEvents();
-      }
-
+      init() { this.bindEvents(); }
       bindEvents() {
-        this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
-        this.loadBtn.addEventListener('click', () => this.loadStudents());
-        this.pickBtn.addEventListener('click', () => this.pickStudent());
-        this.resetBtn.addEventListener('click', () => this.resetPick());
-        this.backBtn.addEventListener('click', () => this.backToUpload());
+       this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+       this.loadBtn.addEventListener('click', () => this.loadStudents());
+       this.pickBtn.addEventListener('click', () => this.pickStudent());
+       this.resetBtn.addEventListener('click', () => this.resetPick());
+       this.backBtn.addEventListener('click', () => this.backToUpload());
       }
-
       handleFileSelect(e) {
        const file = e.target.files[0];
-       if (file) {
-          this.fileName.textContent = file.name;
-        } else {
-          this.fileName.textContent = '未选择文件';
-        }
+       this.fileName.textContent = file ? file.name : '未选择文件';
       }
-
       async loadStudents() {
        const file = this.fileInput.files[0];
        const manualText = this.manualInput.value.trim();
-        
         let names = [];
-        
        if (file) {
           try {
            const text = await this.readFile(file);
@@ -606,18 +230,13 @@
           alert('请选择文件或者输入学生名字');
           return;
         }
-        
-       if (names.length === 0) {
-          alert('未找到有效的学生名字');
-          return;
-        }
-        
-        this.students = names;
-        this.lastWinnerIndex= -1;
-        this.showPickSection();
-        this.updateStudentCount();
+       if (names.length === 0) { alert('未找到有效的学生名字'); return; }
+       this.students = names;
+       this.lastWinnerIndex = -1;
+       this.showPickSection();
+       this.updateStudentCount();
+       this.playClickSound();
       }
-
       readFile(file) {
         return new Promise((resolve, reject) => {
          const reader = new FileReader();
@@ -626,118 +245,87 @@
           reader.readAsText(file, 'UTF-8');
         });
       }
-
       parseNames(text) {
-        return text
-          .split('\n')
-          .map(name => name.trim())
-          .filter(name => name.length > 0);
+        return text.split('\n').map(name => name.trim()).filter(name => name.length > 0);
       }
-
       updateStudentCount() {
-        this.studentCount.innerHTML = `✅ 已加载 ${this.students.length} 名学生`;
-        this.studentCount.style.display = 'block';
+       this.studentCount.innerHTML = `✅ 已加载 ${this.students.length} 名学生`;
+       this.studentCount.style.display = 'block';
       }
-
       showPickSection() {
-        this.uploadSection.style.display = 'none';
-        this.pickSection.style.display = 'block';
+       this.uploadSection.style.display = 'none';
+       this.pickSection.style.display = 'block';
       }
-
       backToUpload() {
-        this.uploadSection.style.display = 'block';
-        this.pickSection.style.display = 'none';
-        this.resultContainer.innerHTML = '<p class="result-placeholder">准备好了吗？点击按钮开始抽人！</p>';
+       this.uploadSection.style.display = 'block';
+       this.pickSection.style.display = 'none';
+       this.resultContainer.innerHTML = '<p class="result-placeholder">准备好了吗？点击按钮开始抽人！</p>';
+       this.playClickSound();
       }
-
       getSmartRandomIndex() {
-       if (this.students.length <= 1) {
-          return 0;
-        }
-        
+       if (this.students.length <= 1) return 0;
         let newIndex;
-        do {
-          newIndex = Math.floor(Math.random() * this.students.length);
+       do {
+          newIndex= Math.floor(Math.random() * this.students.length);
         } while (newIndex === this.lastWinnerIndex && this.students.length > 1);
-        
         return newIndex;
       }
-
       pickStudent() {
        if (this.isRolling) return;
-       if (this.students.length === 0) {
-          alert('请先加载学生名单');
-          return;
-        }
-        
-        this.isRolling = true;
-        this.pickBtn.disabled = true;
-        this.resetBtn.disabled = true;
-        
+       if (this.students.length === 0) { alert('请先加载学生名单'); return; }
+       this.isRolling= true;
+       this.pickBtn.disabled = true;
+       this.resetBtn.disabled = true;
        const animationType = this.animationSelect.value;
-        
        const rollingElement = document.createElement('div');
        rollingElement.className = 'rolling-name';
-        this.resultContainer.innerHTML = '';
-        this.resultContainer.appendChild(rollingElement);
-        
+       this.resultContainer.innerHTML = '';
+       this.resultContainer.appendChild(rollingElement);
        const finalWinnerIndex = this.getSmartRandomIndex();
        const finalWinnerName = this.students[finalWinnerIndex];
-        
         let rollCount = 0;
-       const minRolls = 25;
-       const maxRolls = 35;
+       const minRolls = 25, maxRolls = 35;
        const targetRolls = Math.floor(Math.random() * (maxRolls - minRolls + 1)) + minRolls;
-        
        const getDelay = (count) => {
          if (count < 15) return 60;
          if (count < 25) return 80;
          if (count < 30) return 120;
           return 150 + (count - 30) * 20;
         };
-        
        const roll = () => {
          if (rollCount >= targetRolls) {
-            this.finalizePick(finalWinnerName, animationType);
+           this.finalizePick(finalWinnerName, animationType);
             return;
           }
-          
          const randomIndex = Math.floor(Math.random() * this.students.length);
          rollingElement.textContent = this.students[randomIndex];
-          
          rollCount++;
           setTimeout(roll, getDelay(rollCount));
         };
-        
        roll();
       }
-
-      finalizePick(winnerName, animationType) {
-        this.lastWinnerIndex = this.students.indexOf(winnerName);
-        
-        this.resultContainer.innerHTML = `<div class="result-name animate-${animationType}">${winnerName}</div>`;
-        
+     finalizePick(winnerName, animationType) {
+       this.lastWinnerIndex= this.students.indexOf(winnerName);
+       if (window.soundEffect) window.soundEffect.playSuccess();
+       this.resultContainer.innerHTML = `<div class="result-name animate-${animationType}">${winnerName}</div>`;
        const resultElement = this.resultContainer.querySelector('.result-name');
        const animationDuration = parseInt(getComputedStyle(resultElement).animationDuration) * 1000 || 1000;
-        
         setTimeout(() => {
           resultElement.classList.remove(`animate-${animationType}`);
           void resultElement.offsetWidth;
         }, animationDuration);
-        
-        this.isRolling= false;
-        this.pickBtn.disabled = false;
-        this.resetBtn.disabled = false;
+       this.isRolling = false;
+       this.pickBtn.disabled = false;
+       this.resetBtn.disabled = false;
       }
-
       resetPick() {
-        this.resultContainer.innerHTML = '<p class="result-placeholder">准备好了吗？点击按钮开始抽人！</p>';
+       if (window.soundEffect) window.soundEffect.playClick();
+       this.resultContainer.innerHTML = '<p class="result-placeholder">准备好了吗？点击按钮开始抽人！</p>';
       }
+     playClickSound() { if (window.soundEffect) window.soundEffect.playClick(); }
+     playSuccessSound() { if (window.soundEffect) window.soundEffect.playSuccess(); }
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      new RandomPicker();
-    });
+   document.addEventListener('DOMContentLoaded', () => { new RandomPicker(); });
   </script>
 </body>
 </html>
