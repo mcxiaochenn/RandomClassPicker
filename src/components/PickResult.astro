@@ -1,0 +1,39 @@
+---
+// 结果展示组件 — 抽人结果和操作按钮区域（预设班级页面用）
+import ResultDisplay from './ResultDisplay.astro';
+import AnimationSelector from './AnimationSelector.astro';
+
+interface Props {
+	className: string;
+	studentCount: number;
+}
+
+const { className, studentCount } = Astro.props;
+---
+
+<!-- 结果展示区域 -->
+<ResultDisplay />
+
+<!-- 动画选择 -->
+<AnimationSelector />
+
+<!-- 按钮组 -->
+<div class="button-group">
+	<button id="pickBtn" class="btn btn-large btn-success">
+		<span class="icon">🎲</span>
+		<span class="text">点击抽人</span>
+	</button>
+
+	<button id="resetBtn" class="btn btn-secondary">
+		<span class="icon">🔄</span>
+		<span class="text">重新抽取</span>
+	</button>
+
+	<slot name="back-action" />
+</div>
+
+<!-- 抽取历史 -->
+<div class="pick-history" id="pickHistory">
+	<h3>抽取历史</h3>
+	<ul id="historyList"></ul>
+</div>

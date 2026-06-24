@@ -1,108 +1,30 @@
 ---
-// 主页 - 班级抽人工具
+// 主页 - 班级抽人工具（通用版本）
+// 支持文件上传或手动输入学生名单
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PickerMain from '../components/PickerMain.astro';
 ---
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>班级抽人工具</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="stylesheet" href="/styles/main.css" />
-</head>
-<body>
-  <div class="container">
-    <header class="header">
-      <h1>🎯 班级抽人工具</h1>
-      <p class="subtitle">公平随机抽取，让每个同学都有机会</p>
-    </header>
 
-    <main class="main-content">
-      <!-- 文件上传区域 -->
-      <section class="upload-section" id="uploadSection">
-        <div class="upload-card">
-          <h2>📁 上传学生名单</h2>
-          <p class="upload-hint">请上传包含学生名字的文本文件（每行一个名字）</p>
-          
-          <div class="file-input-wrapper">
-            <input 
-              type="file" 
-              id="fileInput" 
-              accept=".txt" 
-              class="file-input"
-            />
-            <label for="fileInput" class="file-label">
-              <span class="icon">📄</span>
-              <span class="text">选择文件</span>
-            </label>
-            <span id="fileName" class="file-name">未选择文件</span>
-          </div>
+<BaseLayout title="抽人工具">
+	<div class="app">
+		<header class="app-header">
+			<h1>// 抽人工具</h1>
+			<p class="tagline">公平 · 随机 · 刺激</p>
+		</header>
 
-          <div class="manual-input">
-            <p>或者手动输入学生名字：</p>
-            <textarea 
-              id="manualInput" 
-              placeholder="请输入学生名字，每行一个&#10;例如：&#10;张三&#10;李四&#10;王五"
-              rows="5"
-            ></textarea>
-          </div>
+		<main>
+			<PickerMain />
+		</main>
 
-          <button id="loadBtn" class="btn btn-primary">
-            <span class="icon">✅</span>
-            <span class="text">加载名单</span>
-          </button>
+		<footer class="footer">
+			<p>&copy; 2026 班级抽人工具</p>
+		</footer>
+	</div>
 
-          <div id="studentCount" class="student-count"></div>
-        </div>
-      </section>
-
-      <!-- 抽人区域 -->
-      <section class="pick-section" id="pickSection" style="display: none;">
-        <div class="pick-card">
-          <div class="result-display">
-            <div class="result-container" id="resultContainer">
-              <p class="result-placeholder">准备好了吗？点击按钮开始抽人！</p>
-            </div>
-          </div>
-
-          <div class="animation-selector">
-            <label for="animationSelect">选择动画效果：</label>
-            <select id="animationSelect">
-              <option value="fadeIn">淡入淡出</option>
-              <option value="bounce">弹跳效果</option>
-              <option value="roll">滚动抽奖</option>
-              <option value="spin">大转盘</option>
-              <option value="flip">翻转卡片</option>
-            </select>
-          </div>
-
-          <div class="button-group">
-            <button id="pickBtn" class="btn btn-large btn-success">
-              <span class="icon">🎲</span>
-              <span class="text">点击抽人</span>
-            </button>
-            
-            <button id="resetBtn" class="btn btn-secondary">
-              <span class="icon">🔄</span>
-              <span class="text">重新抽取</span>
-            </button>
-            
-            <button id="backBtn" class="btn btn-outline">
-              <span class="icon">⬅️</span>
-              <span class="text">返回上传</span>
-            </button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <p>&copy; 2026 班级抽人工具 | 支持本地使用和静态部署</p>
-    </footer>
-  </div>
-
-  <!-- 音效脚本 -->
-  <script is:inline src="/scripts/audio.js"></script>
-  <script src="/scripts/main.js" type="module"></script>
-</body>
-</html>
+	<!-- 音效脚本（内联加载，确保先于业务脚本） -->
+	<script is:inline src="/scripts/audio.js"></script>
+	<!-- 动画系统 -->
+	<script is:inline src="/scripts/animation.js"></script>
+	<!-- 主逻辑脚本（模块模式） -->
+	<script src="/scripts/main.js" type="module"></script>
+</BaseLayout>

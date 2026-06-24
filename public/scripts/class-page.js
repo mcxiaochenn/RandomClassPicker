@@ -59,77 +59,98 @@ class ClassPicker {
       alert('没有学生名单');
       return;
     }
-    
+
   this.isRolling= true;
   this.pickBtn.disabled = true;
   this.resetBtn.disabled = true;
-    
+
   const animationType= this.animationSelect.value;
-    
+
     // 创建滚动显示元素
   const rollingElement = document.createElement('div');
   rollingElement.className = 'rolling-name';
   this.resultContainer.innerHTML = '';
   this.resultContainer.appendChild(rollingElement);
-    
+
     // 预先确定最终获奖者（智能算法）
   const finalWinnerIndex= this.getSmartRandomIndex();
   const finalWinnerName = this.students[finalWinnerIndex];
-    
+
+    // 获取动画系统
+  const anim = window.animationSystem;
+
     // 滚动动画参数
     let rollCount = 0;
   const minRolls = 25;
   const maxRolls = 35;
   const targetRolls = Math.floor(Math.random() * (maxRolls - minRolls + 1)) + minRolls;
-    
-    // 减速函数 - 让滚动逐渐变慢
-  const getDelay = (count) => {
-   if (count < 15) return 60;
-   if (count < 25) return 80;
-   if (count < 30) return 120;
-      return 150 + (count - 30) * 20;
-    };
-    
+
     // 滚动函数
   const roll = () => {
    if (rollCount >= targetRolls) {
-      this.finalizePick(finalWinnerName, animationType);
+      // 最终定格
+      rollingElement.textContent = finalWinnerName;
+      rollingElement.classList.add('rolling-stop');
+      setTimeout(() => this.finalizePick(finalWinnerName, animationType), 300);
         return;
       }
-      
+
       // 显示随机名字（滚动过程）
    const randomIndex= Math.floor(Math.random() * this.students.length);
    rollingElement.textContent = this.students[randomIndex];
-      
+
+      // 更新视觉效果
+    if (anim) {
+      anim.updateRollingVisual(rollingElement, rollCount, targetRolls);
+      anim.onNameChange(rollingElement, rollCount, targetRolls);
+    }
+
    rollCount++;
-      
-      // 继续滚动
-      setTimeout(roll, getDelay(rollCount));
+
+      // 继续滚动（使用动画系统的减速曲线）
+      const delay = anim ? anim.getRollDelay(rollCount, targetRolls) : this._fallbackDelay(rollCount);
+      setTimeout(roll, delay);
     };
-    
+
     // 开始滚动
   roll();
+  }
+
+  // 后备减速函数
+  _fallbackDelay(count) {
+    if (count < 15) return 60;
+    if (count < 25) return 80;
+    if (count < 30) return 120;
+    return 150 + (count - 30) * 20;
   }
 
   // 确定最终结果
   finalizePick(winnerName, animationType) {
     // 更新最后中奖者索引
   this.lastWinnerIndex= this.students.indexOf(winnerName);
-    
-    // 播放成功音效
-  this.playSuccessSound();
-    
-    // 显示最终结果，应用过程动画
-  this.resultContainer.innerHTML = `<div class="result-name animate-${animationType}">${winnerName}</div>`;
-    
-  const resultElement = this.resultContainer.querySelector('.result-name');
-  const animationDuration = parseInt(getComputedStyle(resultElement).animationDuration) * 1000 || 1000;
-    
-    setTimeout(() => {
-      resultElement.classList.remove(`animate-${animationType}`);
-      void resultElement.offsetWidth;
-    }, animationDuration);
-    
+
+    // 播放揭晓音效
+  this.playRevealSound();
+
+    // 创建结果元素
+  const resultElement = document.createElement('div');
+  resultElement.className = 'result-name';
+  resultElement.textContent = winnerName;
+  this.resultContainer.innerHTML = '';
+  this.resultContainer.appendChild(resultElement);
+
+    // 使用动画系统播放揭晓动画
+  const anim = window.animationSystem;
+  if (anim) {
+    anim.playReveal(this.resultContainer, resultElement, animationType);
+      const duration = anim.getAnimationDuration(animationType);
+      setTimeout(() => {
+        resultElement.classList.add('revealed');
+      }, duration);
+    } else {
+      resultElement.classList.add('revealed');
+    }
+
   this.isRolling = false;
   this.pickBtn.disabled = false;
   this.resetBtn.disabled = false;
@@ -148,10 +169,10 @@ class ClassPicker {
     }
   }
 
-  // 播放成功音效
-  playSuccessSound() {
+  // 播放揭晓音效
+  playRevealSound() {
   if (window.soundEffect) {
-    window.soundEffect.playSuccess();
+    window.soundEffect.playReveal();
     }
   }
 }

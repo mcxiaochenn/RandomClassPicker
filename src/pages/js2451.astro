@@ -1,73 +1,52 @@
 ---
 // JS2451 班级预设页面
+// 从 JSON 导入班级数据，直接进入抽人界面
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PickResult from '../components/PickResult.astro';
 import classData from '../data/classes/js2451.json';
+
+const { class_name, students } = classData;
 ---
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{classData.class_name} - 班级抽人工具</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="stylesheet" href="/styles/main.css" />
-</head>
-<body>
-  <div class="container">
-    <header class="header">
-      <h1>🎯 {classData.class_name} 班抽人工具</h1>
-      <p class="subtitle">已加载预设名单，共 {classData.students.length} 名同学</p>
-    </header>
 
-    <main class="main-content">
-      <section class="pick-section" id="pickSection" style="display: block;">
-        <div class="pick-card">
-          <div class="result-display">
-            <div class="result-container" id="resultContainer">
-              <p class="result-placeholder">准备好了吗？点击按钮开始抽人！</p>
-            </div>
-          </div>
+<BaseLayout title={`${class_name} - 班级抽人工具`}>
+	<div class="app">
+		<header class="app-header">
+			<h1>// {class_name} 班抽人工具</h1>
+			<p class="tagline">已加载预设名单，共 {students.length} 名同学</p>
+		</header>
 
-          <div class="animation-selector">
-            <label for="animationSelect">选择动画效果：</label>
-            <select id="animationSelect">
-              <option value="fadeIn">淡入淡出</option>
-              <option value="bounce">弹跳效果</option>
-              <option value="roll">滚动抽奖</option>
-              <option value="spin">大转盘</option>
-              <option value="flip">翻转卡片</option>
-            </select>
-          </div>
+		<main>
+			<section class="pick-zone" id="pickZone" style="display: block;">
+				<div class="pick-card">
+					<PickResult
+						className={class_name}
+						studentCount={students.length}
+					>
+						<!-- 返回首页按钮（通过 slot 注入） -->
+						<a href="/" class="btn btn-outline" slot="back-action">
+							<span class="icon">⬅️</span>
+							<span class="text">返回首页</span>
+						</a>
+					</PickResult>
+				</div>
+			</section>
+		</main>
 
-          <div class="button-group">
-            <button id="pickBtn" class="btn btn-large btn-success">
-              <span class="icon">🎲</span>
-              <span class="text">点击抽人</span>
-            </button>
-            
-            <button id="resetBtn" class="btn btn-secondary">
-              <span class="icon">🔄</span>
-              <span class="text">重新抽取</span>
-            </button>
-            
-            <a href="/" class="btn btn-outline">
-              <span class="icon">⬅️</span>
-              <span class="text">返回首页</span>
-            </a>
-          </div>
-        </div>
-      </section>
-    </main>
+		<footer class="footer">
+			<p>&copy; 2026 班级抽人工具 | {class_name} 专用</p>
+		</footer>
+	</div>
 
-    <footer class="footer">
-      <p>&copy; 2026 班级抽人工具 | {classData.class_name} 专用</p>
-    </footer>
-  </div>
+	<!-- 音效脚本（内联加载） -->
+	<script is:inline src="/scripts/audio.js"></script>
+	<!-- 动画系统 -->
+	<script is:inline src="/scripts/animation.js"></script>
 
-  <!-- 音效脚本 -->
-  <script is:inline src="/scripts/audio.js"></script>
-  <script set:html={`
-  window.CLASS_DATA = ${JSON.stringify({ class_name: classData.class_name, students: classData.students })};
-  `}></script>
-  <script src="/scripts/class-page.js" type="module"></script>
-</body>
-</html>
+	<!-- 注入班级数据到全局变量 -->
+	<script set:html={`
+	window.CLASS_DATA = ${JSON.stringify({ class_name, students })};
+	`}></script>
+
+	<!-- 班级页面专用逻辑 -->
+	<script src="/scripts/class-page.js" type="module"></script>
+</BaseLayout>
